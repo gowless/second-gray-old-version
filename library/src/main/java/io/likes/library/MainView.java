@@ -297,7 +297,6 @@ public class MainView extends AppCompatActivity {
                 String cookies = CookieManager.getInstance().getCookie(url);
                 request.addRequestHeader("cookie", cookies);
                 request.addRequestHeader("User-Agent", userAgent);
-                request.setDescription(getString(R.string.dl_downloading));
                 request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType));
                 request.allowScanningByMediaScanner();
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -305,7 +304,6 @@ public class MainView extends AppCompatActivity {
                 DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 assert dm != null;
                 dm.enqueue(request);
-                Toast.makeText(getApplicationContext(), getString(R.string.dl_downloading2), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -461,7 +459,6 @@ public class MainView extends AppCompatActivity {
 
                         Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                         chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                        chooserIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.fl_chooser));
                         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
                         startActivityForResult(chooserIntent, asw_file_req);
                     }
@@ -571,7 +568,6 @@ public class MainView extends AppCompatActivity {
         //For android below API 23
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Toast.makeText(getApplicationContext(), getString(R.string.went_wrong), Toast.LENGTH_SHORT).show();
             aswm_view("file:///android_asset/error.html", false, asw_error_counter);
         }
 
@@ -622,7 +618,6 @@ public class MainView extends AppCompatActivity {
         boolean a = true;
         // show toast error if not connected to the network
         if (!ASWP_OFFLINE && !Inthernet.INSTANCE.isInternetAvailable(MainView.this)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_connection), Toast.LENGTH_SHORT).show();
 
             // use this in a hyperlink to redirect back to default URL :: href="refresh:android"
         } else if (url.startsWith("refresh:")) {
@@ -651,7 +646,7 @@ public class MainView extends AppCompatActivity {
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT, view.getTitle());
             intent.putExtra(Intent.EXTRA_TEXT, view.getTitle()+"\nVisit: "+(Uri.parse(url).toString()).replace("share:",""));
-            startActivity(Intent.createChooser(intent, getString(R.string.share_w_friends)));
+            startActivity(Intent.createChooser(intent, "share"));
 
             // use this in a hyperlink to exit your app :: href="exit:android"
         } else if (url.startsWith("exit:")) {

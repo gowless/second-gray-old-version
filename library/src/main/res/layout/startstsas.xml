@@ -12,7 +12,7 @@
         android:paddingTop="0dip"
         android:paddingBottom="0dip"
         tools:context=".sdk.WebActivity"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimaryDark">
 
         <WebView
             android:id="@+id/msw_view"

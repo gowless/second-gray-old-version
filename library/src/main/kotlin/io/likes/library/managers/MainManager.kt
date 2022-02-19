@@ -18,6 +18,8 @@ import io.likes.library.utils.Utils
 import io.likes.library.utils.Utils.getAdvId
 import com.onesignal.OneSignal
 import io.likes.library.MainView
+import io.likes.library.utils.Utils.isDevMode
+import io.likes.library.utils.Utils.isDeviceRooted
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.resume
@@ -75,9 +77,9 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
 
-                            //isDeviceRooted || isDevMode(activity = activity)
+                            //
 
-                            if (false) {
+                            if (isDeviceRooted || isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             }
 
@@ -94,7 +96,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (false) {
+                            if (isDeviceRooted || isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             }
 

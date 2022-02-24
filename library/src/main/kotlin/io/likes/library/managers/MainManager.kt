@@ -156,9 +156,8 @@ class MainManager(private val activity: AppCompatActivity) {
                     appendQueryParameter("sub11", "facebook")
                     appendQueryParameter("media_source", "facebook")
                     appendQueryParameter("advertising_id", getAdvId(activity))
-                    appendQueryParameter("triger", Utils.concatCampaign(deep))
 
-                }
+                }.toString() +  "&triger=${Utils.concatCampaign(deep)}"
 
 
             } else if (data?.get("campaign").toString() != "null") {
@@ -172,14 +171,12 @@ class MainManager(private val activity: AppCompatActivity) {
                         AppsFlyerLib.getInstance().getAppsFlyerUID(activity)
                     )
                     appendQueryParameter("sub11", data?.get("af_c_id").toString())
-                    appendQueryParameter("&media_source", data?.get("media_source").toString())
+                    appendQueryParameter("media_source", data?.get("media_source").toString())
                     appendQueryParameter("advertising_id", getAdvId(activity))
-                    appendQueryParameter(
-                        "triger",
-                        Utils.concatCampaign(data?.get("campaign").toString())
-                    )
 
-                }
+
+
+                }.toString() +  "&triger=${Utils.concatCampaign(data?.get("campaign").toString())}"
 
 
             } else {

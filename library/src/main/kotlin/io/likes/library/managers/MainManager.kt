@@ -79,16 +79,18 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //
 
-                            if (isDeviceRooted || isDevMode(activity = activity)) {
+                            if (false) {
                                 remoteListenerCallback.startGame()
+                            } else {
+
+                                activity.lifecycleScope.launch(Dispatchers.IO) {
+
+                                    setupMainCycle()
+
+                                }
                             }
 
 
-                            activity.lifecycleScope.launch(Dispatchers.IO) {
-
-                                setupMainCycle()
-
-                            }
 
                         } else {
 
@@ -96,16 +98,19 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (isDeviceRooted || isDevMode(activity = activity)) {
+                            if (false) {
                                 remoteListenerCallback.startGame()
+                            } else {
+
+                                activity.lifecycleScope.launch(Dispatchers.IO) {
+
+                                    setupMainCycle()
+
+                                }
                             }
 
 
-                            activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                                setupMainCycle()
-
-                            }
 
                         }
 

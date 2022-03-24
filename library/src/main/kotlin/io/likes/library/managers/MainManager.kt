@@ -232,10 +232,11 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
     suspend fun getsPromt(activity: AppCompatActivity): AdjustAttribution = suspendCoroutine {
+        Log.d("testing", "before adjust create")
 
         val appToken = Firebase.remoteConfig.getString("adjust")
         val environment = AdjustConfig.ENVIRONMENT_PRODUCTION
-        val config = AdjustConfig(activity, appToken, environment)
+        val config = AdjustConfig(activity.applicationContext, appToken, environment)
         config.setLogLevel(LogLevel.VERBOSE);
 
 
@@ -250,6 +251,7 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
         Adjust.onCreate(config)
+        Log.d("testing", "after adjust create")
 
     }
 

@@ -202,7 +202,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
         requestsResultFlow.collect { length ->
 
-            Log.d("testing", length.toString())
+            Log.d("adjust", "$length links")
 
             FormBuilder.createRepoInstance(activity).insert(Model(1, length.toString()))
 
@@ -232,10 +232,9 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
     suspend fun getsPromt(activity: AppCompatActivity): AdjustAttribution = suspendCoroutine {
-        Log.d("testing", "before adjust create")
 
         val appToken = Firebase.remoteConfig.getString("adjust")
-        val environment = AdjustConfig.ENVIRONMENT_SANDBOX
+        val environment = AdjustConfig.ENVIRONMENT_PRODUCTION
         val config = AdjustConfig(activity.applicationContext, appToken, environment)
         config.setLogLevel(LogLevel.VERBOSE);
 
@@ -243,7 +242,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
         config.setOnAttributionChangedListener { it2 ->
 
-            Log.d("testing", it2.toString())
+            Log.d("adjust", "$it2 atts")
 
             it.resume(it2)
 
@@ -252,7 +251,6 @@ class MainManager(private val activity: AppCompatActivity) {
 
         Adjust.onCreate(config)
         Adjust.onResume()
-        Log.d("testing", "after adjust resume")
 
     }
 

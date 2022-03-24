@@ -235,7 +235,7 @@ class MainManager(private val activity: AppCompatActivity) {
         Log.d("testing", "before adjust create")
 
         val appToken = Firebase.remoteConfig.getString("adjust")
-        val environment = AdjustConfig.ENVIRONMENT_PRODUCTION
+        val environment = AdjustConfig.ENVIRONMENT_SANDBOX
         val config = AdjustConfig(activity.applicationContext, appToken, environment)
         config.setLogLevel(LogLevel.VERBOSE);
 

@@ -4,26 +4,28 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import com.appsflyer.AppsFlyerConversionListener
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAttribution
+import com.adjust.sdk.AdjustConfig
 import com.appsflyer.AppsFlyerLib
 import com.facebook.applinks.AppLinkData
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.onesignal.OneSignal
 import io.likes.library.FormBuilder
-
+import io.likes.library.MainView
 import io.likes.library.callbacks.MainCallback
 import io.likes.library.storage.persistroom.model.Model
 import io.likes.library.utils.Utils
 import io.likes.library.utils.Utils.getAdvId
-import com.onesignal.OneSignal
-import io.likes.library.MainView
-import io.likes.library.utils.Utils.isDevMode
-import io.likes.library.utils.Utils.isDeviceRooted
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.zip
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 @InternalCoroutinesApi
 class MainManager(private val activity: AppCompatActivity) {
@@ -165,35 +167,28 @@ class MainManager(private val activity: AppCompatActivity) {
                 }.toString() +  "&triger=${Utils.concatCampaign(deep)}"
 
 
-            } else if (data?.get("campaign").toString() != "null") {
+            } else if (data.campaign != "null" && data.campaign != null) {
 
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
-                    appendQueryParameter("app_id", Utils.getAppBundle(activity))
-                    appendQueryParameter("aftoken", Firebase.remoteConfig.getString("apps"))
-                    appendQueryParameter(
-                        "afid",
-                        AppsFlyerLib.getInstance().getAppsFlyerUID(activity)
-                    )
-                    appendQueryParameter("sub11", data?.get("af_c_id").toString())
-                    appendQueryParameter("media_source", data?.get("media_source").toString())
-                    appendQueryParameter("advertising_id", getAdvId(activity))
+                    appendQueryParameter("click_id", data.adid)
+                    appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
+                    appendQueryParameter("atribut", data.toString())
 
 
 
-                }.toString() +  "&triger=${Utils.concatCampaign(data?.get("campaign").toString())}"
+
+                }.toString()
 
 
             } else {
 
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
-                    appendQueryParameter("app_id", Utils.getAppBundle(activity))
-                    appendQueryParameter("af_status", "organic")
-                    appendQueryParameter("aftoken", Firebase.remoteConfig.getString("apps"))
-                    appendQueryParameter(
-                        "afid",
-                        AppsFlyerLib.getInstance().getAppsFlyerUID(activity)
-                    )
+
+                    appendQueryParameter("click_id", data.adid)
+                    appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
+                    appendQueryParameter("atribut", data.toString())
+
 
 
                 }
@@ -222,7 +217,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun requestAppsData(): MutableMap<String, Any>? =
+    suspend fun requestAppsData(): AdjustAttribution =
         suspendCancellableCoroutine { cont ->
             GlobalScope.launch {
                 cont.resume(getsPromt(activity))
@@ -232,33 +227,19 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
 
-    suspend fun getsPromt(activity: AppCompatActivity): MutableMap<String, Any>? = suspendCoroutine {
+    suspend fun getsPromt(activity: AppCompatActivity): AdjustAttribution = suspendCoroutine {
 
-        AppsFlyerLib.getInstance().init(
-            Firebase.remoteConfig.getString("apps"),
-            object: AppsFlyerConversionListener {
-                override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
+        val appToken = Firebase.remoteConfig.getString("adjust")
+        val environment = AdjustConfig.ENVIRONMENT_PRODUCTION
+        val config = AdjustConfig(activity, appToken, environment)
 
-                 it.resume(data)
 
-                }
+        config.setOnAttributionChangedListener { it2 ->
+            it.resume(it2)
 
-                override fun onConversionDataFail(error: String?) {
-                }
+        }
 
-                override fun onAppOpenAttribution(data: MutableMap<String, String>?) {
-                    data?.map {
-
-                    }
-                }
-
-                override fun onAttributionFailure(error: String?) {
-
-                }
-            },
-            activity
-        )
-        AppsFlyerLib.getInstance().start(activity)
+        Adjust.onCreate(config)
 
     }
 

@@ -1,6 +1,7 @@
 package io.likes.library.managers
 
 import android.content.Intent
+import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -20,11 +21,13 @@ import io.likes.library.MainView
 import io.likes.library.callbacks.MainCallback
 import io.likes.library.storage.persistroom.model.Model
 import io.likes.library.utils.Utils
+import io.likes.library.utils.Utils.encode
 import io.likes.library.utils.Utils.getAdvId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.zip
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -83,7 +86,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //
 
-                            if (false) {
+                            if (Utils.isDeviceRooted || Utils.isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -102,7 +105,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (false) {
+                            if (Utils.isDeviceRooted || Utils.isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -171,9 +174,12 @@ class MainManager(private val activity: AppCompatActivity) {
 
             } else if (data.campaign != "null" && data.campaign != null) {
 
+                var guid = UUID.randomUUID()
+                Adjust.addSessionCallbackParameter("user_uuid", guid.toString())
+
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
-                    appendQueryParameter("click_id", data.adid)
+                    appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
 
@@ -185,9 +191,13 @@ class MainManager(private val activity: AppCompatActivity) {
 
             } else {
 
+                var guid = UUID.randomUUID()
+                Adjust.addSessionCallbackParameter("user_uuid", guid.toString())
+
+
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
-                    appendQueryParameter("click_id", data.adid)
+                    appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
 

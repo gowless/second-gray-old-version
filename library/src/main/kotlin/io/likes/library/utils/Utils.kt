@@ -3,6 +3,7 @@ package io.likes.library.utils
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
+import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import java.io.BufferedReader
@@ -91,6 +92,10 @@ object Utils {
                 else -> false
             }
         }
+
+    fun String.encode(): String {
+        return Base64.encodeToString(this.toByteArray(charset("UTF-8")), Base64.DEFAULT)
+    }
 
     }
 

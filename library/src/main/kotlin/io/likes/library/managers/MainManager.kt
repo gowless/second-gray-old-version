@@ -1,12 +1,14 @@
 package io.likes.library.managers
 
 import android.content.Intent
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAttribution
 import com.adjust.sdk.AdjustConfig
+import com.adjust.sdk.LogLevel
 import com.appsflyer.AppsFlyerLib
 import com.facebook.applinks.AppLinkData
 import com.google.firebase.ktx.Firebase
@@ -200,6 +202,8 @@ class MainManager(private val activity: AppCompatActivity) {
 
         requestsResultFlow.collect { length ->
 
+            Log.d("testing", length.toString())
+
             FormBuilder.createRepoInstance(activity).insert(Model(1, length.toString()))
 
             activity.startActivity(
@@ -232,10 +236,16 @@ class MainManager(private val activity: AppCompatActivity) {
         val appToken = Firebase.remoteConfig.getString("adjust")
         val environment = AdjustConfig.ENVIRONMENT_PRODUCTION
         val config = AdjustConfig(activity, appToken, environment)
+        config.setLogLevel(LogLevel.VERBOSE);
+
 
 
         config.setOnAttributionChangedListener { it2 ->
+
+            Log.d("testing", it2.toString())
+
             it.resume(it2)
+
 
         }
 

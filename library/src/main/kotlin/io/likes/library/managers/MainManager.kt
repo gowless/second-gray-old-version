@@ -251,7 +251,8 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
         Adjust.onCreate(config)
-        Log.d("testing", "after adjust create")
+        Adjust.onResume()
+        Log.d("testing", "after adjust resume")
 
     }
 

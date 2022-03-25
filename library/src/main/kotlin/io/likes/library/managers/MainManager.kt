@@ -86,7 +86,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //
 
-                            if (Utils.isDeviceRooted || Utils.isDevMode(activity = activity)) {
+                            if (false) {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -105,7 +105,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (Utils.isDeviceRooted || Utils.isDevMode(activity = activity)) {
+                            if (false) {
                                 remoteListenerCallback.startGame()
                             } else {
 

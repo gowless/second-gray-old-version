@@ -35,6 +35,8 @@ import kotlin.coroutines.suspendCoroutine
 @InternalCoroutinesApi
 class MainManager(private val activity: AppCompatActivity) {
 
+    var guid = UUID.randomUUID()
+
 
     fun initialize() {
 
@@ -174,8 +176,6 @@ class MainManager(private val activity: AppCompatActivity) {
 
             } else if (data.campaign != "null" && data.campaign != null) {
 
-                var guid = UUID.randomUUID()
-                Adjust.addSessionCallbackParameter("user_uuid", guid.toString())
 
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
@@ -191,8 +191,6 @@ class MainManager(private val activity: AppCompatActivity) {
 
             } else {
 
-                var guid = UUID.randomUUID()
-                Adjust.addSessionCallbackParameter("user_uuid", guid.toString())
 
 
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
@@ -260,6 +258,7 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
         Adjust.onCreate(config)
+        Adjust.addSessionCallbackParameter("user_uuid", guid.toString())
         Adjust.onResume()
 
     }

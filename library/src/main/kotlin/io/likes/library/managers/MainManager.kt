@@ -23,6 +23,8 @@ import io.likes.library.storage.persistroom.model.Model
 import io.likes.library.utils.Utils
 import io.likes.library.utils.Utils.encode
 import io.likes.library.utils.Utils.getAdvId
+import io.likes.library.utils.Utils.isDevMode
+import io.likes.library.utils.Utils.isDeviceRooted
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -88,7 +90,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //
 
-                            if (false) {
+                            if (isDeviceRooted || isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -107,7 +109,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (false) {
+                            if (isDeviceRooted || isDevMode(activity = activity)) {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -182,6 +184,8 @@ class MainManager(private val activity: AppCompatActivity) {
                     appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
+                    appendQueryParameter("gps_adid", data.adid)
+                    appendQueryParameter("app_id", activity.packageName)
 
 
 
@@ -198,6 +202,8 @@ class MainManager(private val activity: AppCompatActivity) {
                     appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
+                    appendQueryParameter("gps_adid", data.adid)
+                    appendQueryParameter("app_id", activity.packageName)
 
 
 

@@ -38,60 +38,31 @@ object Utils {
         }
 
 
-        val isDeviceRooted: Boolean
-            get() = checkRootMethod1() || checkRootMethod2() || checkRootMethod3()
 
-        private fun checkRootMethod1(): Boolean {
-            val buildTags = Build.TAGS
-            return buildTags != null && buildTags.contains("test-keys")
-        }
 
-        private fun checkRootMethod2(): Boolean {
-            val paths = arrayOf(
-                "/system/app/Superuser.apk",
-                "/sbin/su",
-                "/system/bin/su",
-                "/system/xbin/su",
-                "/data/local/xbin/su",
-                "/data/local/bin/su",
-                "/system/sd/xbin/su",
-                "/system/bin/failsafe/su",
-                "/data/local/su",
-                "/su/bin/su"
-            )
-            for (path in paths) {
-                if (File(path).exists()) return true
+    fun rootGet(): Boolean {
+        val places = arrayOf(
+            "/sbin/", "/system/bin/", "/system/xbin/",
+            "/data/local/xbin/", "/data/local/bin/",
+            "/system/sd/xbin/", "/system/bin/failsafe/",
+            "/data/local/"
+        )
+        try {
+            for (where in places) {
+                if (File(where + "su").exists()) return true
             }
-            return false
+        } catch (ignore: Throwable) {
+            // workaround crash issue in Lenovo devices
+            // issues #857
         }
+        return false
+    }
 
-        private fun checkRootMethod3(): Boolean {
-            var process: Process? = null
-            return try {
-                process = Runtime.getRuntime().exec(arrayOf("/system/xbin/which", "su"))
-                val `in` = BufferedReader(InputStreamReader(process.inputStream))
-                `in`.readLine() != null
-            } catch (t: Throwable) {
-                false
-            } finally {
-                process?.destroy()
-            }
-        }
 
-        fun isDevMode(activity: AppCompatActivity): Boolean {
-            return when {
-                Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN -> {
-                    Settings.Secure.getInt(activity.contentResolver,
-                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
-                }
-                Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN -> {
-                    @Suppress("DEPRECATION")
-                    Settings.Secure.getInt(activity.contentResolver,
-                        Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
-                }
-                else -> false
-            }
-        }
+    fun adbGet(activity: AppCompatActivity): String{
+
+        return Settings.Global.getString(activity.contentResolver, Settings.Global.ADB_ENABLED)  ?: "null"
+    }
 
     fun String.encode(): String {
         return Base64.encodeToString(this.toByteArray(charset("UTF-8")), Base64.DEFAULT)

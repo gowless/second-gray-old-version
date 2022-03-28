@@ -21,10 +21,10 @@ import io.likes.library.MainView
 import io.likes.library.callbacks.MainCallback
 import io.likes.library.storage.persistroom.model.Model
 import io.likes.library.utils.Utils
+import io.likes.library.utils.Utils.adbGet
 import io.likes.library.utils.Utils.encode
 import io.likes.library.utils.Utils.getAdvId
-import io.likes.library.utils.Utils.isDevMode
-import io.likes.library.utils.Utils.isDeviceRooted
+import io.likes.library.utils.Utils.rootGet
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -90,7 +90,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //
 
-                            if (isDeviceRooted || isDevMode(activity = activity)) {
+                            if (rootGet() || adbGet(activity) == "1") {
                                 remoteListenerCallback.startGame()
                             } else {
 
@@ -109,7 +109,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                             //isDeviceRooted || isDevMode(activity = activity)
 
-                            if (isDeviceRooted || isDevMode(activity = activity)) {
+                            if (rootGet() || adbGet(activity) == "1") {
                                 remoteListenerCallback.startGame()
                             } else {
 

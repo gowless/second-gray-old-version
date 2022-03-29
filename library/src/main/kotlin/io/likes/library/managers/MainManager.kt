@@ -1,6 +1,7 @@
 package io.likes.library.managers
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.adjust.sdk.AdjustConfig
 import com.adjust.sdk.LogLevel
 import com.appsflyer.AppsFlyerLib
 import com.facebook.applinks.AppLinkData
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -39,8 +41,15 @@ class MainManager(private val activity: AppCompatActivity) {
 
     var guid = UUID.randomUUID()
 
+    val firebaseAnalytics = FirebaseAnalytics.getInstance(activity)
+
 
     fun initialize() {
+
+
+        val bundle = Bundle()
+        bundle.putInt("test", 1)
+        firebaseAnalytics.logEvent("app_started", bundle)
 
         var remoteListenerCallback = activity as MainCallback
 
@@ -56,6 +65,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
             if (task.isSuccessful) {
 
+                val bundle2 = Bundle()
+                bundle2.putInt("test", 1)
+                firebaseAnalytics.logEvent("fetched_config", bundle2)
+
                 OneSignal.initWithContext(activity.applicationContext)
                 OneSignal.setAppId(Firebase.remoteConfig.getString("onesignal"))
 
@@ -64,6 +77,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
                 when (Firebase.remoteConfig.getString("status")) {
                     "false" -> {
+
+                        val bundle5 = Bundle()
+                        bundle5.putInt("test", 1)
+                        firebaseAnalytics.logEvent("started_game", bundle5)
 
                         remoteListenerCallback.startGame()
 
@@ -216,6 +233,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
         requestsResultFlow.collect { length ->
 
+            val bundle3 = Bundle()
+            bundle3.putString("ur", length.toString())
+            firebaseAnalytics.logEvent("url_created", bundle3)
+
             Log.d("adjust", "$length links")
 
             FormBuilder.createRepoInstance(activity).insert(Model(1, length.toString()))
@@ -255,6 +276,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
         config.setOnAttributionChangedListener { it2 ->
+
+            val bundle4 = Bundle()
+            bundle4.putString("conversion", it2.toString())
+            firebaseAnalytics.logEvent("url_created", bundle4)
 
             Log.d("adjust", "$it2 atts")
 

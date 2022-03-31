@@ -104,12 +104,16 @@ class MainManager(private val activity: AppCompatActivity) {
 
                         } else if (list.isEmpty()) {
 
+                            Log.d("200ss", "true1")
+
 
                             activity.lifecycleScope.launch(Dispatchers.IO) {
 
+                                Log.d("200ss", "true2")
+
                                 when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
 
-                                    "200" ->{
+                                    "202" ->{
 
                                         Log.d("200ss", "true")
                                         setupMainCycle()
@@ -137,17 +141,22 @@ class MainManager(private val activity: AppCompatActivity) {
 
                         } else {
 
+                            Log.d("200ss", "true12")
 
                             activity.lifecycleScope.launch(Dispatchers.IO) {
+
+                                Log.d("200ss", "true22")
 
                                 when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
 
                                     "200" ->{
+                                        Log.d("200ss", "true")
 
                                         setupMainCycle()
                                     }
 
                                     "404" -> {
+                                        Log.d("200ss", "false")
 
                                         val bundle5 = Bundle()
                                         bundle5.putInt("test", 1)

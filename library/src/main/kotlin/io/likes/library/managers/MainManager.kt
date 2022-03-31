@@ -48,7 +48,6 @@ class MainManager(private val activity: AppCompatActivity) {
     fun initialize() {
 
 
-
         val bundle = Bundle()
         bundle.putInt("test", 1)
         firebaseAnalytics.logEvent("app_started", bundle)
@@ -111,78 +110,66 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                 Log.d("200ss", "true2")
 
-                                var codes = getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
+                                var codes =
+                                    getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
                                 Log.d("200ss", codes)
 
-                                when (codes){
-
-                                    "200" ->{
-
-                                        Log.d("200ss", "true")
+                                if(codes == "200"){
+                                    activity.lifecycleScope.launch(Dispatchers.IO) {
+                                        Log.d("200ss", "true44")
                                         setupMainCycle()
 
                                     }
 
-                                    "404" -> {
+                                } else if(codes == "404"){
 
-                                        Log.d("200ss", "false")
+                                    Log.d("200ss", "false44")
 
-                                        val bundle5 = Bundle()
-                                        bundle5.putInt("test", 1)
-                                        firebaseAnalytics.logEvent("started_game", bundle5)
-                                        remoteListenerCallback.startGame()
-                                        activity.finish()
-                                    }
+                                    val bundle5 = Bundle()
+                                    bundle5.putInt("test", 1)
+                                    firebaseAnalytics.logEvent("started_game", bundle5)
+                                    remoteListenerCallback.startGame()
+                                    activity.finish()
                                 }
 
 
+
                             }
-
-
-
 
 
                         } else {
 
                             Log.d("200ss", "true12")
 
-                            activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                                Log.d("200ss", "true22")
 
-                                var codes = getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
-                                Log.d("200ss", codes)
+                            Log.d("200ss", "true22")
 
-                                when (codes){
+                            var codes = getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
+                            Log.d("200ss", codes)
 
-                                    "200" ->{
-                                        Log.d("200ss", "true")
 
-                                        setupMainCycle()
-                                    }
+                            if(codes == "200"){
+                                activity.lifecycleScope.launch(Dispatchers.IO) {
+                                    Log.d("200ss", "true222")
+                                    setupMainCycle()
 
-                                    "404" -> {
-                                        Log.d("200ss", "false")
-
-                                        val bundle5 = Bundle()
-                                        bundle5.putInt("test", 1)
-                                        firebaseAnalytics.logEvent("started_game", bundle5)
-                                        remoteListenerCallback.startGame()
-                                        activity.finish()
-                                    }
                                 }
 
+                            } else if(codes == "404"){
 
+                                Log.d("200ss", "false242")
+
+                                val bundle5 = Bundle()
+                                bundle5.putInt("test", 1)
+                                firebaseAnalytics.logEvent("started_game", bundle5)
+                                remoteListenerCallback.startGame()
+                                activity.finish()
                             }
 
 
 
-
                         }
-
-
-
-
 
 
                     }
@@ -228,7 +215,7 @@ class MainManager(private val activity: AppCompatActivity) {
                     appendQueryParameter("media_source", "facebook")
                     appendQueryParameter("advertising_id", getAdvId(activity))
 
-                }.toString() +  "&triger=${Utils.concatCampaign(deep)}"
+                }.toString() + "&triger=${Utils.concatCampaign(deep)}"
 
 
             } else if (data.campaign != "null" && data.campaign != null) {
@@ -236,13 +223,14 @@ class MainManager(private val activity: AppCompatActivity) {
 
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
-                    appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
+                    appendQueryParameter(
+                        "click_id",
+                        (activity.packageName + "-" + guid.toString()).encode()
+                    )
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
                     appendQueryParameter("gps_adid", data.adid)
                     appendQueryParameter("app_id", activity.packageName)
-
-
 
 
                 }.toString()
@@ -251,15 +239,16 @@ class MainManager(private val activity: AppCompatActivity) {
             } else {
 
 
-
                 Firebase.remoteConfig.getString("links").toUri().buildUpon().apply {
 
-                    appendQueryParameter("click_id", (activity.packageName+"-"+guid.toString()).encode())
+                    appendQueryParameter(
+                        "click_id",
+                        (activity.packageName + "-" + guid.toString()).encode()
+                    )
                     appendQueryParameter("token", Firebase.remoteConfig.getString("adjust"))
                     appendQueryParameter("atribut", data.toString())
                     appendQueryParameter("gps_adid", data.adid)
                     appendQueryParameter("app_id", activity.packageName)
-
 
 
                 }
@@ -352,8 +341,7 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
 
-
-    fun getResponseCode(url: String): String{
+    fun getResponseCode(url: String): String {
 
         val openUrl = URL(url)
         val http: HttpURLConnection = openUrl.openConnection() as HttpURLConnection

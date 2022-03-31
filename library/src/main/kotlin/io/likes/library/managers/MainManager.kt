@@ -116,7 +116,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                 when (codes){
 
-                                    "202" ->{
+                                    "200" ->{
 
                                         Log.d("200ss", "true")
                                         setupMainCycle()

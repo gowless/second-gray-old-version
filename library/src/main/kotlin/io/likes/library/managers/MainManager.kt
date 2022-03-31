@@ -2,7 +2,6 @@ package io.likes.library.managers
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -31,6 +30,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.zip
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -45,6 +46,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
     fun initialize() {
+
 
 
         val bundle = Bundle()
@@ -71,7 +73,6 @@ class MainManager(private val activity: AppCompatActivity) {
 
                 OneSignal.initWithContext(activity.applicationContext)
                 OneSignal.setAppId(Firebase.remoteConfig.getString("onesignal"))
-
 
 
 
@@ -104,37 +105,65 @@ class MainManager(private val activity: AppCompatActivity) {
                         } else if (list.isEmpty()) {
 
 
+                            activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                            //
+                                when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
 
-                            if (rootGet() || adbGet(activity) == "1") {
-                                remoteListenerCallback.startGame()
-                            } else {
+                                    "200" ->{
 
-                                activity.lifecycleScope.launch(Dispatchers.IO) {
+                                        activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                                    setupMainCycle()
+                                            setupMainCycle()
 
+                                        }
+
+                                    }
+
+                                    "404" -> {
+
+                                        val bundle5 = Bundle()
+                                        bundle5.putInt("test", 1)
+                                        firebaseAnalytics.logEvent("started_game", bundle5)
+                                        remoteListenerCallback.startGame()
+                                        activity.finish()
+                                    }
                                 }
+
+
                             }
+
+
 
 
 
                         } else {
 
 
+                            activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                            //isDeviceRooted || isDevMode(activity = activity)
+                                when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
 
-                            if (rootGet() || adbGet(activity) == "1") {
-                                remoteListenerCallback.startGame()
-                            } else {
+                                    "200" ->{
 
-                                activity.lifecycleScope.launch(Dispatchers.IO) {
+                                        activity.lifecycleScope.launch(Dispatchers.IO) {
 
-                                    setupMainCycle()
+                                            setupMainCycle()
 
+                                        }
+
+                                    }
+
+                                    "404" -> {
+
+                                        val bundle5 = Bundle()
+                                        bundle5.putInt("test", 1)
+                                        firebaseAnalytics.logEvent("started_game", bundle5)
+                                        remoteListenerCallback.startGame()
+                                        activity.finish()
+                                    }
                                 }
+
+
                             }
 
 
@@ -275,11 +304,12 @@ class MainManager(private val activity: AppCompatActivity) {
 
 
 
+
         config.setOnAttributionChangedListener { it2 ->
 
             val bundle4 = Bundle()
             bundle4.putString("conversion", it2.toString())
-            firebaseAnalytics.logEvent("url_created", bundle4)
+            firebaseAnalytics.logEvent("conversion_get", bundle4)
 
             Log.d("adjust", "$it2 atts")
 
@@ -313,5 +343,13 @@ class MainManager(private val activity: AppCompatActivity) {
         }
 
 
+
+    fun getResponseCode(url: String): String{
+
+        val openUrl = URL(url)
+        val http: HttpURLConnection = openUrl.openConnection() as HttpURLConnection
+        return http.responseCode.toString()
+
+    }
 }
 

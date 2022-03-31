@@ -111,7 +111,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                 Log.d("200ss", "true2")
 
-                                when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
+                                var codes = getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
+                                Log.d("200ss", codes)
+
+                                when (codes){
 
                                     "202" ->{
 
@@ -147,7 +150,10 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                 Log.d("200ss", "true22")
 
-                                when (getResponseCode(Firebase.remoteConfig.getString("urlCheck"))){
+                                var codes = getResponseCode(Firebase.remoteConfig.getString("urlCheck"))
+                                Log.d("200ss", codes)
+
+                                when (codes){
 
                                     "200" ->{
                                         Log.d("200ss", "true")

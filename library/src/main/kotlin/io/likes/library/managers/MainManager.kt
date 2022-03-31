@@ -111,15 +111,14 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                     "200" ->{
 
-                                        activity.lifecycleScope.launch(Dispatchers.IO) {
-
-                                            setupMainCycle()
-
-                                        }
+                                        Log.d("200ss", "true")
+                                        setupMainCycle()
 
                                     }
 
                                     "404" -> {
+
+                                        Log.d("200ss", "false")
 
                                         val bundle5 = Bundle()
                                         bundle5.putInt("test", 1)
@@ -145,12 +144,7 @@ class MainManager(private val activity: AppCompatActivity) {
 
                                     "200" ->{
 
-                                        activity.lifecycleScope.launch(Dispatchers.IO) {
-
-                                            setupMainCycle()
-
-                                        }
-
+                                        setupMainCycle()
                                     }
 
                                     "404" -> {
